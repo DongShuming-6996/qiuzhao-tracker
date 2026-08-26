@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import {
   Form, Input, Button, Space, Card, Spin, message, Typography,
-  Tabs, Table, Popconfirm, Tag, Select, Tooltip,
+  Tabs, Table, Popconfirm, Tag, Select, Tooltip, Grid,
 } from 'antd';
 import {
   ThunderboltOutlined, SaveOutlined, FileTextOutlined,
@@ -20,6 +20,8 @@ const { Text, Paragraph } = Typography;
  */
 export default function JobForm({ initialValues, onSave, onSaveDraft, onDelete, onCancel }) {
   const [form] = Form.useForm();
+  const screens = Grid.useBreakpoint();
+  const isMobile = !screens.md;
   const [parsing, setParsing] = useState(false);
   const [rawText, setRawText] = useState(initialValues?.raw_text || '');
   const [fullscreen, setFullscreen] = useState(false);
@@ -331,7 +333,7 @@ export default function JobForm({ initialValues, onSave, onSaveDraft, onDelete, 
           onFinish={handleFinish}
           requiredMark="optional"
         >
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: '0 16px' }}>
             <Form.Item
               label="岗位名称"
               name="title"
@@ -482,8 +484,8 @@ export default function JobForm({ initialValues, onSave, onSaveDraft, onDelete, 
       />
 
       {mode === 'single' ? (
-        <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-          <div style={{ flex: '0 0 33.333%', minWidth: 0 }}>{pasteCard}</div>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 16, alignItems: 'stretch' }}>
+          <div style={{ flex: isMobile ? 'none' : '0 0 33.333%', minWidth: 0 }}>{pasteCard}</div>
           <div style={{ flex: 1, minWidth: 0 }}>{singleForm}</div>
         </div>
       ) : (

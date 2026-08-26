@@ -1,5 +1,5 @@
 import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Layout, Typography, Tabs } from 'antd';
+import { Layout, Typography, Tabs, Grid } from 'antd';
 import {
   UnorderedListOutlined, PlusCircleOutlined,
 } from '@ant-design/icons';
@@ -9,6 +9,7 @@ import JobDetailPage from './pages/JobDetailPage';
 
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
+const { useBreakpoint } = Grid;
 
 const tabItems = [
   { key: '/',       label: '岗位列表', icon: <UnorderedListOutlined /> },
@@ -17,6 +18,8 @@ const tabItems = [
 
 function AppHeader() {
   const location = useLocation();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const currentPath = location.pathname;
 
   // 详情页和编辑页不匹配主 tab，高亮列表
@@ -28,7 +31,7 @@ function AppHeader() {
     <Header
       style={{
         background: '#fff',
-        padding: '0 24px',
+        padding: isMobile ? '0 12px' : '0 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -37,9 +40,9 @@ function AppHeader() {
         lineHeight: '56px',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-        <Title level={4} style={{ margin: 0, whiteSpace: 'nowrap', fontWeight: 700, fontSize: 18 }}>
-          📋 秋招投递追踪
+      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 24, minWidth: 0 }}>
+        <Title level={4} style={{ margin: 0, whiteSpace: 'nowrap', fontWeight: 700, fontSize: isMobile ? 15 : 18 }}>
+          📋 秋招追踪
         </Title>
         <Tabs
           activeKey={activeKey}
@@ -51,23 +54,28 @@ function AppHeader() {
           }))}
           style={{ marginBottom: 0 }}
           tabBarStyle={{ marginBottom: 0 }}
+          size={isMobile ? 'small' : 'middle'}
         />
       </div>
-      <div>
-        <span style={{ fontSize: 12, color: '#999' }}>
-          数据存储在浏览器本地
-        </span>
-      </div>
+      {!isMobile && (
+        <div>
+          <span style={{ fontSize: 12, color: '#999' }}>
+            数据存储在浏览器本地
+          </span>
+        </div>
+      )}
     </Header>
   );
 }
 
 export default function App() {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   return (
     <HashRouter>
       <Layout style={{ minHeight: '100vh', background: '#f5f5f5' }}>
         <AppHeader />
-        <Content style={{ padding: 24, maxWidth: 1400, width: '100%', margin: '0 auto' }}>
+        <Content style={{ padding: isMobile ? 12 : 24, maxWidth: 1400, width: '100%', margin: '0 auto' }}>
           <Routes>
             <Route path="/" element={<JobListPage />} />
             <Route path="/create" element={<JobCreatePage />} />

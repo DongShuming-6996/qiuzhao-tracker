@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button, message, Modal, Checkbox, Select, Divider, Typography } from 'antd';
+import { Button, message, Modal, Checkbox, Select, Divider, Typography, Grid } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { getJobs, deleteJob, updateJob } from '../api/storage';
@@ -10,9 +10,12 @@ import CompareModal from '../components/CompareModal';
 import TodoPanel from '../components/TodoPanel';
 
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 export default function JobListPage() {
   const navigate = useNavigate();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const [jobs, setJobs] = useState([]);
   const [filters, setFilters] = useState({});
   const [loading, setLoading] = useState(false);
@@ -133,27 +136,28 @@ export default function JobListPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between', alignItems: isMobile ? 'stretch' : 'center', gap: isMobile ? 12 : 0, marginBottom: 16 }}>
         <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>岗位列表</h2>
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => navigate('/create')}
           style={{
-            width: '15cm',
-            height: '1cm',
+            width: isMobile ? '100%' : 'auto',
+            height: 40,
             fontSize: 16,
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
+            padding: isMobile ? undefined : '0 24px',
           }}
         >
           添加岗位
         </Button>
       </div>
 
-      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 16, alignItems: 'stretch' }}>
+        <div style={{ flex: 1, minWidth: 0, order: isMobile ? 2 : 1 }}>
           <FilterPanel filters={filters} onFilter={handleFilter} onReset={handleReset} />
 
           <JobTable
@@ -171,7 +175,9 @@ export default function JobListPage() {
           />
         </div>
 
-        <TodoPanel jobs={jobs} />
+        <div style={{ order: isMobile ? 1 : 2 }}>
+          <TodoPanel jobs={jobs} />
+        </div>
       </div>
 
       <Modal

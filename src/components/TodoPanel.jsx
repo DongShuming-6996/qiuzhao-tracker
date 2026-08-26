@@ -1,8 +1,9 @@
-import { Card, List, Tag, Typography, Empty } from 'antd';
+import { Card, List, Tag, Typography, Empty, Grid } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { TODO_FIELDS } from '../utils/constants';
 
 const { Text } = Typography;
+const { useBreakpoint } = Grid;
 
 /**
  * 右侧固定待办板块 — 陈列「待完成测评 / 待面试」的岗位
@@ -10,6 +11,8 @@ const { Text } = Typography;
  */
 export default function TodoPanel({ jobs = [] }) {
   const navigate = useNavigate();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   const todoJobs = jobs.filter(j => j.todo_assessment || j.todo_interview);
 
@@ -26,14 +29,14 @@ export default function TodoPanel({ jobs = [] }) {
         </span>
       }
       style={{
-        width: 320,
-        flexShrink: 0,
-        position: 'sticky',
-        top: 24,
+        width: isMobile ? '100%' : 320,
+        flexShrink: isMobile ? undefined : 0,
+        position: isMobile ? 'static' : 'sticky',
+        top: isMobile ? undefined : 24,
         borderColor: '#ffd6d6',
         boxShadow: '0 2px 8px rgba(255, 77, 79, 0.08)',
       }}
-      styles={{ body: { padding: 0, maxHeight: 'calc(100vh - 200px)', overflow: 'auto' } }}
+      styles={{ body: { padding: 0, maxHeight: isMobile ? undefined : 'calc(100vh - 200px)', overflow: 'auto' } }}
     >
       {todoJobs.length === 0 ? (
         <Empty
